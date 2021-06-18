@@ -1091,6 +1091,11 @@ void MVKOcclusionQueryCommandEncoderState::endMetalRenderPass() {
         [mtlAccumEncoder dispatchThreadgroups: MTLSizeMake(1, 1, 1)
                         threadsPerThreadgroup: MTLSizeMake(1, 1, 1)];
     }
+
+    [_mtlFence release];
+    _mtlFence = [_cmdEncoder->getMTLDevice() newFence];
+    [mtlAccumEncoder updateFence: _mtlFence];
+
     _cmdEncoder->endCurrentMetalEncoding();
     _mtlRenderPassQueries.clear();
 }
@@ -1118,6 +1123,12 @@ void MVKOcclusionQueryCommandEncoderState::endOcclusionQuery(MVKOcclusionQueryPo
 
 void MVKOcclusionQueryCommandEncoderState::encodeImpl(uint32_t stage) {
 	if (stage != kMVKGraphicsStageRasterization) { return; }
+
+    if (_mtlFence && _mtlVisibilityResultMode != MTLVisibilityResultModeDisabled) {
+        [_cmdEncoder->_mtlRenderEncoder waitForFence: _mtlFence beforeStages: MTLRenderStageVertex];
+        [_mtlFence release];
+        _mtlFence = nil;
+    }
 
 	[_cmdEncoder->_mtlRenderEncoder setVisibilityResultMode: _mtlVisibilityResultMode
 													 offset: _mtlVisibilityResultOffset];

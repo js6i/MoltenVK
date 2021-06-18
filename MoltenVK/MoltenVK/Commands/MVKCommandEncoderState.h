@@ -616,6 +616,7 @@ protected:
 
     MTLVisibilityResultMode _mtlVisibilityResultMode = MTLVisibilityResultModeDisabled;
     NSUInteger _mtlVisibilityResultOffset = 0;
+    id<MTLFence> _mtlFence = nil;
 	MVKSmallVector<std::pair<MVKQuerySpec, NSUInteger>> _mtlRenderPassQueries;
 };
 
