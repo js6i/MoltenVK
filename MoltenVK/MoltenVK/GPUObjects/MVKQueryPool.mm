@@ -335,7 +335,7 @@ MVKOcclusionQueryPool::MVKOcclusionQueryPool(MVKDevice* device,
         uint32_t queryCount = pCreateInfo->queryCount;
         VkDeviceSize reqBuffLen = (VkDeviceSize)queryCount * kMVKQuerySlotSizeInBytes;
         VkDeviceSize maxBuffLen = _device->_pMetalFeatures->maxQueryBufferSize;
-        VkDeviceSize newBuffLen = min(reqBuffLen, maxBuffLen);
+        VkDeviceSize newBuffLen = maxBuffLen; // Don't skimp for the purpose of this hack.
         queryCount = uint32_t(newBuffLen / kMVKQuerySlotSizeInBytes);
 
         if (reqBuffLen > maxBuffLen) {

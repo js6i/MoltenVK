@@ -1099,14 +1099,15 @@ void MVKOcclusionQueryCommandEncoderState::beginOcclusionQuery(MVKOcclusionQuery
 
     MVKQuerySpec querySpec;
     querySpec.set(pQueryPool, query);
-    NSUInteger offset = _mtlRenderPassQueries.empty() ? 0 : _mtlVisibilityResultOffset + kMVKQuerySlotSizeInBytes;
+    // Need to check if the visibility buffer is big enough!
+    NSUInteger offset = _mtlVisibilityResultOffset;
     NSUInteger maxOffset = _cmdEncoder->_pDeviceMetalFeatures->maxQueryBufferSize - kMVKQuerySlotSizeInBytes;
     offset = min(offset, maxOffset);
     _mtlRenderPassQueries.push_back(make_pair(querySpec, offset));
 
     bool shouldCount = _cmdEncoder->_pDeviceFeatures->occlusionQueryPrecise && mvkAreAllFlagsEnabled(flags, VK_QUERY_CONTROL_PRECISE_BIT);
     _mtlVisibilityResultMode = shouldCount ? MTLVisibilityResultModeCounting : MTLVisibilityResultModeBoolean;
-    _mtlVisibilityResultOffset = offset;
+    _mtlVisibilityResultOffset = offset + kMVKQuerySlotSizeInBytes;
 
     markDirty();
 }

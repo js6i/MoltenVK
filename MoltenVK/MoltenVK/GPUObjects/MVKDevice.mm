@@ -3668,7 +3668,7 @@ uint32_t MVKDevice::expandVisibilityResultMTLBuffer(uint32_t queryCount) {
     _globalVisibilityQueryCount += queryCount;
     VkDeviceSize reqBuffLen = (VkDeviceSize)_globalVisibilityQueryCount * kMVKQuerySlotSizeInBytes;
     VkDeviceSize maxBuffLen = _pMetalFeatures->maxQueryBufferSize;
-    VkDeviceSize newBuffLen = min(reqBuffLen, maxBuffLen);
+    VkDeviceSize newBuffLen = maxBuffLen; // Don't skimp for the purpose of this hack.
     _globalVisibilityQueryCount = uint32_t(newBuffLen / kMVKQuerySlotSizeInBytes);
 
     if (reqBuffLen > maxBuffLen) {
