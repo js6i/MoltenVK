@@ -318,6 +318,9 @@ MVK_PUBLIC_SYMBOL bool SPIRVToMSLConverter::convert(SPIRVToMSLConversionConfigur
 			auto& rbb = rb.resourceBinding;
 			if (rbb.stage == shaderConfig.options.entryPointStage) {
 				pMSLCompiler->add_msl_resource_binding(rbb);
+				if (rbb.count == 0) {
+					pMSLCompiler->set_argument_buffer_device_address_space(rbb.desc_set, true);
+				}
 				if (rb.requiresConstExprSampler) {
 					pMSLCompiler->remap_constexpr_sampler_by_binding(rbb.desc_set, rbb.binding, rb.constExprSampler);
 				}

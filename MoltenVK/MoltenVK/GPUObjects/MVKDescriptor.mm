@@ -110,8 +110,6 @@ void mvkPopulateShaderConversionConfig(mvk::SPIRVToMSLConversionConfiguration& s
 									   VkDescriptorType descType,
 									   MVKSampler* immutableSampler,
 									   bool usingNativeTextureAtomics) {
-	if (count == 0) { return; }
-
 #define addResourceBinding(spvRezType)												\
 	do {																			\
 		mvk::MSLResourceBinding rb;													\
@@ -533,7 +531,7 @@ void MVKDescriptorSetLayoutBinding::populateShaderConversionConfig(mvk::SPIRVToM
                                                                    uint32_t dslIndex) {
 	// For argument buffers, set variable length arrays to length 1 in shader.
 	bool isUsingMtlArgBuff = _layout->isUsingMetalArgumentBuffers();
-	uint32_t descCnt = isUsingMtlArgBuff ? getDescriptorCount(1) : getDescriptorCount();
+	uint32_t descCnt = isUsingMtlArgBuff ? getDescriptorCount(0) : getDescriptorCount();
 
 	// Establish the resource indices to use, by combining the offsets of the DSL and this DSL binding.
     MVKShaderResourceBinding mtlIdxs = _mtlResourceIndexOffsets + dslMTLRezIdxOffsets;
